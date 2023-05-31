@@ -2,21 +2,8 @@
 厂全计科大二JAVAEE期末作业客户信息管理系统模版(基于SpringBoot+Mybatis+Vue+axios+element)
 基于MYSQL8的本地数据库,用到两个表
 一个是在javaee下叫customer的表,以下是SQL
-/*
- Navicat MySQL Data Transfer
 
- Source Server         : 175.178.73.96
- Source Server Type    : MySQL
- Source Server Version : 80024 (8.0.24)
- Source Host           : 175.178.73.96:3306
- Source Schema         : javaee
 
- Target Server Type    : MySQL
- Target Server Version : 80024 (8.0.24)
- File Encoding         : 65001
-
- Date: 31/05/2023 18:05:26
-*/
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
@@ -49,21 +36,8 @@ INSERT INTO `customer` VALUES (17, '张三', '广东茂名', '+8617827017384', '
 SET FOREIGN_KEY_CHECKS = 1;
 
 另一个也是javaee下的systemt表,以下是SQL
-/*
- Navicat MySQL Data Transfer
 
- Source Server         : 175.178.73.96
- Source Server Type    : MySQL
- Source Server Version : 80024 (8.0.24)
- Source Host           : 175.178.73.96:3306
- Source Schema         : javaee
 
- Target Server Type    : MySQL
- Target Server Version : 80024 (8.0.24)
- File Encoding         : 65001
-
- Date: 31/05/2023 18:06:40
-*/
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
