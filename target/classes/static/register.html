@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <style>
+        .el-row {
+            margin-bottom: 20px;
+        }
+
+        :last-child {
+            margin-bottom: 0;
+        }
+
+        .el-col {
+            border-radius: 4px;
+        }
+
+        .bg-purple-dark {
+            background: #99a9bf;
+        }
+
+        .bg-purple {
+            background: #d3dce6;
+        }
+
+        .bg-purple-light {
+            background: #e5e9f2;
+        }
+
+        .grid-content {
+            border-radius: 4px;
+            min-height: 36px;
+            flex: 1;
+        }
+
+        .row-bg {
+            padding: 10px 0;
+            background-color: #f9fafc;
+        }
+
+        .el-header, .el-footer {
+            background-color: white;
+            color: #333;
+            text-align: center;
+            line-height: 60px;
+        }
+
+        .el-aside {
+            background-color: #D3DCE6;
+            color: #333;
+            text-align: center;
+            line-height: 200px;
+        }
+
+        .el-main {
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+        }
+
+        body > .el-container {
+            margin-bottom: 40px;
+        }
+
+        .el-container:nth-child(5) .el-aside,
+        .el-container:nth-child(6) .el-aside {
+            line-height: 260px;
+        }
+
+        .el-container:nth-child(7) .el-aside {
+            line-height: 320px;
+        }
+
+        .main-cookie {
+            float: left;
+            margin-top: 10px;
+        }
+
+        .main-login-button {
+            float: right;
+            position: relative;
+            top: 5px;
+        }
+        .login-form-checkCode {
+            width: 50%;
+            height: 100px;
+        }
+
+        .login-form-checkCodeImg {
+            float: right;
+            height: 50px;
+            position: relative;
+            right: 30px;
+        }
+        .el-form{
+            width:30%;
+            margin: 0 auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+            padding-right: 40px;
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header height="80px">
+            <img src="logo/cookie.svg" class="main-cookie">
+        </el-header>
+        <el-main class="login-main">
+            <div class="login-form">
+                <el-form :model="userForm" status-icon :rules="rules" ref="userForm" label-width="100px"
+                         class="demo-userForm">
+                    <el-form-item><h1>REGISTER</h1></el-form-item>
+                    <el-form-item label="用户名" prop="username">
+                        <!--用v-model.trim绑定模型防止用户输入空格-->
+                        <el-input v-model.trim="userForm.username" autocomplete="off" size="medium" maxlength="20"></el-input>
+                    </el-form-item>
+                    <el-form-item label="密码" prop="password">
+                        <el-input type="password" v-model.trim="userForm.password" autocomplete="off" size="medium" maxlength="20"></el-input>
+                    </el-form-item>
+                    <el-form-item label="确认密码" prop="checkPass">
+                        <el-input type="password" v-model.trim="userForm.checkPass" autocomplete="off" size="medium" maxlength="20"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('userForm')">注册</el-button>
+                        <el-button @click="resetForm('userForm')">登录</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </el-main>
+    </el-container>
+
+</div>
+
+
+<!--//用Element要引入3个资源文件-->
+<script src="js/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="element-ui/lib/index.js"></script>
+<!-- 引入样式 -->
+<link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+<script src="js/axios-0.18.0.js"></script>
+<!--//创建Vue的核心对象-->
+<script>
+    new Vue({
+        //标识作用范围
+        el: "#app",
+        //页面加载完成时的触发事件
+        mounted(){
+
+        },
+        //方法集合
+        methods: {
+            /*注册按钮事件*/
+            submitForm(formName) {
+                /*$refs[formName]对应el-form->ref属性validate()用于判断整个表单的input是否有效返回true or false*/
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        /*整个表单验证完成*/
+                        /* var _this = this;*/
+                        //console.log(this.brand);
+                        //发送ajax异步请求，添加数据
+                        axios({
+                            method: "put",
+                            /*把axios所有的localhost改成47.113.184.234解决跨域*/
+                            url: "http://localhost:8080/admins",
+                            data: this.userForm
+                        }).then(resp =>{
+                            if(resp.data == "success"){
+                                //添加成功
+                                //添加成功后重新生成验证码
+                                /*this.getCheckImgAndSetCheckCode();*/
+                                //弹出消息提示
+                                this.$message({
+                                    message: '恭喜你，注册成功',
+                                    type: 'success'
+                                });
+                            }
+                            window.location.href = 'login.html';
+                        })
+
+                    } else {
+                        /*console.log('error submit!!');*/
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                window.location.href = 'login.html';
+            }
+        },
+        //模型集合
+        data() {
+            var validateUsername = (rule, value, callback) => {
+                /*if (value === '') {
+                    callback(new Error('请输入密码'));
+                } else {
+                    if (this.userForm.checkPass !== '') {
+                        this.$refs.userForm.validateField('checkPass');
+                    }
+                    callback();
+                }*/
+                if (value === '') {
+                    callback(new Error('请输入用户名'));
+                    /*设置限制只能输入中英文，数字，‘-’，‘_’*/
+                } else if (/^[\u4E00-\u9FA5A-Za-z0-9_]+$/.test(value) == false) {
+                    callback(new Error("仅支持中英文，数字，‘_’"))
+                } else {
+                    callback();
+                }
+            };
+            var validatePass = (rule, value, callback) => {
+
+                if (value === '') {
+                    //如果为空值
+                    callback(new Error('请输入密码'));
+                } else if(/[a-zA-z0-9]$/.test(value) == false){
+                    callback(new Error('仅支持英文和数字'));
+                } else {
+                    if (this.userForm.checkPass !== '') {
+                        //如果确认密码不为空，则调用检测确认密码的函数
+                        this.$refs.userForm.validateField('checkPass');
+                    }
+                    callback();
+                }
+            };
+            var validateCheckPass = (rule, value, callback) => {
+
+
+                if (value === '') {
+                    callback(new Error('请再次输入密码'));
+                } else if (value !== this.userForm.password) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                    callback();
+                }
+            };
+            return {
+                usernameExists : false,
+                userForm: {
+                    username: '',
+                    password:'',
+                    checkPass: '',
+                },
+                rules: {
+                    username: [
+                        {validator: validateUsername, trigger: 'blur'}
+                    ],
+                    password: [
+                        {validator: validatePass, trigger: 'blur'}
+                    ],
+                    checkPass: [
+                        {validator: validateCheckPass, trigger: 'blur'}
+                    ],
+
+                }
+            }
+        }
+    })
+</script>
+
+</body>
+</html>
